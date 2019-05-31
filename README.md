@@ -1,1 +1,1 @@
-# sentiment-analysis-lixicon-based
+# sentiment-analysis-lexicon-based
