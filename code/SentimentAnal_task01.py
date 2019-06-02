@@ -8,6 +8,8 @@
 import os
 import string
 import re
+import csv
+from collections import Counter
 
 
 INPUT_DIR = "../data/"
@@ -16,6 +18,13 @@ POS_PATH = "../data/lexicon/positive-words.txt"
 
 punctuations = list(string.punctuation)
 negations = ["no", "not"]
+fout = open("../data/sentiment_table.csv", "w")
+csv_writer = csv.writer(fout, delimiter=",")
+csv_writer.writerow(("document", "sent_score", "label",
+                     "neg words", "pos words"))
+
+positive_words = Counter()
+negative_words = Counter()
 
 
 def get_score(document, option=1):
@@ -29,6 +38,8 @@ def get_score(document, option=1):
     # inluding negativity: the final score is composed of 3 scores (pos, neg and number of negations)
     negation_score = 0
     sent_score = 0
+    neg_w = []
+    pos_w = []
 
     document = document.strip()
     if len(document) > 0:
@@ -46,8 +57,12 @@ def get_score(document, option=1):
                     negation_score += 1
                 if token in lex_pos:
                     pos_number += 1
+                    positive_words[token] += 1
+                    pos_w.append(token)
                 if token in lex_neg:
                     neg_number += 1
+                    negative_words[token] += 1
+                    neg_w.append(token)
 
         elif option == 2:
             prev_negation = False
@@ -87,17 +102,27 @@ def get_score(document, option=1):
           # "\n-------------------"
           )
 
-    # return sent_score
+    return sent_score, neg_w, pos_w
 
 
 lex_neg = open(NEG_PATH, encoding="cp1252").read().split("\n")
 lex_pos = open(POS_PATH, encoding="utf-8").read().split("\n")
 
 for i, docname in enumerate(sorted(os.listdir(INPUT_DIR)), 0):
-    if not docname.startswith('.') and os.path.isfile(os.path.join(INPUT_DIR,
-                                                                   docname)):
+    if docname.startswith('d') and os.path.isfile(os.path.join(INPUT_DIR,
+                                                               docname)):
         # print(docname)
         with open(INPUT_DIR + docname, encoding="utf-8") as fin:
             doc = fin.read()
             # option 1 or 2 should be chosen to define the way to calculate sentiment score
-            get_score(doc, option=1)
+            score, neg_words, pos_words = get_score(doc, option=1)
+            # if score >= 7:
+            #     csv_writer.writerow((docname, score, "pos", neg_words, pos_words))
+            # elif score <= 2:
+            #     csv_writer.writerow((docname, score, "neg", neg_words, pos_words))
+            # else:
+            #     csv_writer.writerow((docname, score, "neut", neg_words, pos_words))
+fout.close()
+
+for pw in positive_words:
+    print(pw, positive_words[pw])

@@ -65,7 +65,7 @@ def reducer(key, list_of_values):
     for value in list_of_values:
         total_score = total_score + value
 
-    map_reduce.collect_final_scores((key, float(total_score)))
+    map_reduce.collect_final_scores(key, float(total_score))
 
 
 if __name__ == '__main__':

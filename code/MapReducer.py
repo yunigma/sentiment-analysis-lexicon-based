@@ -6,6 +6,9 @@
 # Ex04
 # create MapReducer class
 
+NEG = 2
+POS = 7
+
 
 class MapReducer:
     def __init__(self):
@@ -20,9 +23,14 @@ class MapReducer:
         # add value to list associated with key
         self.scores_collection[key].append(value)
 
-    def collect_final_scores(self, value):
+    def collect_final_scores(self, key, value):
         # append value to list of results
-        self.results.append(value)
+        if value >= POS:
+            self.results.append((key, value, "positive"))
+        elif value <= NEG:
+            self.results.append((key, value, "negative"))
+        else:
+            self.results.append((key, value, "neutral"))
 
     def execute(self, data, mapper, reducer):
         # call Map function for each review document
@@ -32,7 +40,10 @@ class MapReducer:
         for key in self.scores_collection:
             reducer(key, self.scores_collection[key])
 
-        self.results.sort()
+        # sort by sentiment class
+        self.results.sort(key=lambda x: x[2])
+        # sort by doc id
+        # self.results.sort()
         # print results
         for item in self.results:
             print(item)
