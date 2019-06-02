@@ -1,6 +1,6 @@
 #!/usr/bin/env/python3
 # -*- coding:utf-8 -*-
-# von Iuliia Nigmatulina
+# von Iliyana Kamenova, Yeon Joo Oh, Iuliia Nigmatulina
 
 # Big Data, FS19
 # Ex04
@@ -11,17 +11,19 @@ import re
 
 # neg, neg, pos, neg, neg, pos, neut, neg, pos, neut
 
-INPUT_DIR = "data/"
-NEG_PATH = "data/lexicon/negative-words.txt"
-POS_PATH = "data/lexicon/positive-words.txt"
+INPUT_DIR = "../data/"
+NEG_PATH = "../data/lexicon/negative-words.txt"
+POS_PATH = "../data/lexicon/positive-words.txt"
 
 punctuations = list(string.punctuation)
 negations = ["no", "not"]
 
 
-def find_lexicon(document, option):
+def get_score(document, option=1):
     ''' takes a raw document as an input;
-        returns a sentiment label for the document
+        match words to negative and positive lexicons;
+        2 options to calculate score: option1 is a default one;
+        returns a sentiment score for the document
     '''
     pos_number = 0
     neg_number = 0
@@ -43,9 +45,9 @@ def find_lexicon(document, option):
             for token in clean_tokens:
                 if token in negations:
                     negation_score += 1
-                if token in fin_pos:
+                if token in lex_pos:
                     pos_number += 1
-                if token in fin_neg:
+                if token in lex_neg:
                     neg_number += 1
 
         elif option == 2:
@@ -54,14 +56,14 @@ def find_lexicon(document, option):
                 if token in negations:
                     prev_negation = True
                     negation_score += 1
-                elif token in fin_pos:
+                elif token in lex_pos:
                     if prev_negation:
                         neg_number += 1
                         prev_negation = False
                         # print(token)
                     else:
                         pos_number += 1
-                elif token in fin_neg:
+                elif token in lex_neg:
                     if prev_negation:
                         pos_number += 1
                         prev_negation = False
@@ -89,8 +91,8 @@ def find_lexicon(document, option):
     # return sent_score
 
 
-fin_neg = open(NEG_PATH, encoding="cp1252").read().split("\n")
-fin_pos = open(POS_PATH, encoding="utf-8").read().split("\n")
+lex_neg = open(NEG_PATH, encoding="cp1252").read().split("\n")
+lex_pos = open(POS_PATH, encoding="utf-8").read().split("\n")
 
 for i, docname in enumerate(sorted(os.listdir(INPUT_DIR)), 0):
     if not docname.startswith('.') and os.path.isfile(os.path.join(INPUT_DIR,
@@ -99,4 +101,4 @@ for i, docname in enumerate(sorted(os.listdir(INPUT_DIR)), 0):
         with open(INPUT_DIR + docname, encoding="utf-8") as fin:
             doc = fin.read()
             # option 1 or 2 should be chosen to define the way to calculate sentiment score
-            find_lexicon(doc, option=1)
+            get_score(doc, option=1)
