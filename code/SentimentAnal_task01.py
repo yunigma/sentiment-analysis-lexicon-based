@@ -9,7 +9,6 @@ import os
 import string
 import re
 
-# neg, neg, pos, neg, neg, pos, neut, neg, pos, neut
 
 INPUT_DIR = "../data/"
 NEG_PATH = "../data/lexicon/negative-words.txt"
