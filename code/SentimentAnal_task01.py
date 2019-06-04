@@ -128,6 +128,9 @@ for pw in positive_words:
     print(pw, positive_words[pw])
 """
 #generate word clouds
+#from wordcloud import WordCloud
+#import numpy as np
+#import matplotlib.pyplot as plt
 collect_pw=[]
 collect_nw=[]
 for pw in positive_words:
