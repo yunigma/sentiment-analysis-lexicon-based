@@ -126,3 +126,27 @@ fout.close()
 
 for pw in positive_words:
     print(pw, positive_words[pw])
+"""
+#generate word clouds
+collect_pw=[]
+collect_nw=[]
+for pw in positive_words:
+    collect_pw.append(pw)
+    print(pw, positive_words[pw])
+for nw in negative_words:
+    collect_nw.append(nw)
+    print(nw, negative_words[nw])
+p_words = " ".join(str(x) for x in collect_pw)
+n_words = " ".join(str(x) for x in collect_nw)
+def generate_wordcloud(words):
+    word_cloud = WordCloud(width=512, height=512, background_color='white').generate(words)
+    plt.figure(figsize=(10,8),facecolor='white', edgecolor='blue')
+    plt.imshow(word_cloud)
+    plt.axis('off')
+    plt.tight_layout(pad=0)
+    plt.show()
+
+generate_wordcloud(p_words)
+generate_wordcloud(n_words)
+"""
+
